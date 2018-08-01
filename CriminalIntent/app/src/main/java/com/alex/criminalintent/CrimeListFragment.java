@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class CrimeListFragment extends Fragment {
 
         TextView mTitleTextView;
         TextView mDateTextView;
+        ImageView mImageView;
         Crime mCrime;
 
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent){
@@ -56,6 +58,7 @@ public class CrimeListFragment extends Fragment {
 
             mTitleTextView = itemView.findViewById(R.id.crime_title);
             mDateTextView = itemView.findViewById(R.id.crime_date);
+            mImageView = itemView.findViewById(R.id.crime_solved);
             itemView.setOnClickListener(this);
         }
 
@@ -67,6 +70,7 @@ public class CrimeListFragment extends Fragment {
                 String dateString = date.toString();
                 mDateTextView.setText(date.toString());
             }
+            mImageView.setVisibility(mCrime.isSolved() ? View.VISIBLE : View.GONE);
         }
 
         @Override
@@ -80,6 +84,7 @@ public class CrimeListFragment extends Fragment {
         TextView mTitleTextView;
         TextView mDateTextView;
         Button mButtonPolice;
+        ImageView mImageView;
         Crime mCrime;
 
         public CrimeStrongHolder(LayoutInflater inflater, ViewGroup parent){
@@ -88,6 +93,7 @@ public class CrimeListFragment extends Fragment {
             mTitleTextView = itemView.findViewById(R.id.crime_string_title);
             mDateTextView = itemView.findViewById(R.id.crime_strong_date);
             mButtonPolice = itemView.findViewById(R.id.crime_strong_police);
+            mImageView = itemView.findViewById(R.id.crime_solved_strong);
             itemView.setOnClickListener(this);
 
             //Устанавливаем обработчик событий для кнопки вызова полиции
@@ -118,6 +124,8 @@ public class CrimeListFragment extends Fragment {
                 String dateString = date.toString();
                 mDateTextView.setText(date.toString());
             }
+            mImageView.setVisibility(mCrime.isSolved() ? View.VISIBLE : View.GONE);
+
         }
     }
 
