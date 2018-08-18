@@ -1,5 +1,7 @@
 package com.alex.criminalintent;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,15 +25,15 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
 
     private static final String ARG_CRIME_ID = "crime_id";
+    private static final String CHANGED_CRIME_ID = "extra_crime_id";
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //mCrime = new Crime();
-        //UUID crimeId = (UUID)getActivity().getIntent().getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
-        //mCrime = CrimeLab.Get(getActivity()).getCrime(crimeId);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.Get(getActivity()).getCrime(crimeId);
+        returnResult(crimeId);
     }
 
     public static CrimeFragment newInstance(UUID crimeId){
@@ -40,7 +42,19 @@ public class CrimeFragment extends Fragment {
 
         CrimeFragment crimeFragment = new CrimeFragment();
         crimeFragment.setArguments(args);
+        //crimeFragment.returnResult(crimeId);
         return crimeFragment;
+    }
+
+    public void returnResult(UUID crimeId){
+        Intent intent = new Intent();
+        intent.putExtra(CHANGED_CRIME_ID, crimeId);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    public static UUID getCrimeIdChanged(Intent intent)
+    {
+        return (UUID)intent.getSerializableExtra(CHANGED_CRIME_ID);
     }
 
     @Nullable

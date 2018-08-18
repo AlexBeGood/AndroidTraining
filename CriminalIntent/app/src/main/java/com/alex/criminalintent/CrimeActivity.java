@@ -22,7 +22,11 @@ public class CrimeActivity extends SingleFragmentActivity {
     public static Intent newIntent(Context context, UUID crimeId){
         Intent intent = new Intent(context, CrimeActivity.class);
         intent.putExtra(EXTRA_CRIME_ID, crimeId);
-
         return intent;
+    }
+
+    public static UUID getCrimeIdChanged(Intent intent)
+    {
+        return CrimeFragment.getCrimeIdChanged(intent);
     }
 }

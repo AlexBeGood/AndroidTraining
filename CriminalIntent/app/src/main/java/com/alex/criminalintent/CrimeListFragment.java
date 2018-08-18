@@ -1,5 +1,6 @@
 package com.alex.criminalintent;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,11 +17,15 @@ import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class CrimeListFragment extends Fragment {
 
+    private static final int REQUEST_CRIME = 1;
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mCrimeAdapter;
+
+    private UUID mChangedCrimeId = null;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +38,19 @@ public class CrimeListFragment extends Fragment {
         mCrimeRecyclerView = (RecyclerView) v.findViewById(R.id.crime_recycler_view);
         //Задаем новый LayoutManager - он занимается размещением элементов на экране
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //Создаем адаптер и связываем его с RecyclerView
+
         updateUI();
         return v;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CRIME && resultCode == Activity.RESULT_OK){
+            //Получаем номер изменившегося преступления
+            mChangedCrimeId = CrimeActivity.getCrimeIdChanged(data);
+        }
     }
 
     @Override
@@ -47,11 +62,19 @@ public class CrimeListFragment extends Fragment {
     private void updateUI(){
         CrimeLab crimeLab = CrimeLab.Get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
+        Crime changedCrime = null;
+
         if (mCrimeAdapter == null) {
             mCrimeAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mCrimeAdapter);
         }else{
-            mCrimeAdapter.notifyDataSetChanged();
+            int changedCrimePosition;
+            if (mChangedCrimeId != null) {
+                changedCrimePosition = crimeLab.getCrimePosition(mChangedCrimeId);
+                mCrimeAdapter.notifyItemChanged(changedCrimePosition);
+            }
+            else
+                mCrimeAdapter.notifyDataSetChanged();
         }
     }
 
@@ -86,7 +109,7 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View view) {
             //Toast.makeText(getActivity(), mCrime.getTitle() + " clicked!", Toast.LENGTH_SHORT).show();
             Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CRIME);
         }
     }
 
@@ -126,7 +149,7 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View view) {
             //Toast.makeText(getActivity(), "Crime is strong! Call the police!", Toast.LENGTH_SHORT).show();
             Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CRIME);
         }
 
         public void bind(Crime crime){
@@ -191,5 +214,7 @@ public class CrimeListFragment extends Fragment {
             }
             return super.getItemViewType(position);
         }
+
+
     }
 }
