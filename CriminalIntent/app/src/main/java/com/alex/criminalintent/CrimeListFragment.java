@@ -49,7 +49,7 @@ public class CrimeListFragment extends Fragment {
 
         if (requestCode == REQUEST_CRIME && resultCode == Activity.RESULT_OK){
             //Получаем номер изменившегося преступления
-            mChangedCrimeId = CrimeActivity.getCrimeIdChanged(data);
+            mChangedCrimeId = CrimePagerActivity.getCrimeIdChanged(data);
         }
     }
 
@@ -68,13 +68,15 @@ public class CrimeListFragment extends Fragment {
             mCrimeAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mCrimeAdapter);
         }else{
-            int changedCrimePosition;
-            if (mChangedCrimeId != null) {
-                changedCrimePosition = crimeLab.getCrimePosition(mChangedCrimeId);
-                mCrimeAdapter.notifyItemChanged(changedCrimePosition);
-            }
-            else
-                mCrimeAdapter.notifyDataSetChanged();
+            mCrimeAdapter.notifyDataSetChanged();
+
+//            int changedCrimePosition;
+//            if (mChangedCrimeId != null) {
+//                changedCrimePosition = crimeLab.getCrimePosition(mChangedCrimeId);
+//                mCrimeAdapter.notifyItemChanged(changedCrimePosition);
+//            }
+//            else
+//                mCrimeAdapter.notifyDataSetChanged();
         }
     }
 
